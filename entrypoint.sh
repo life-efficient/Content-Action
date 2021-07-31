@@ -1,5 +1,5 @@
 #!/bin/sh -l
 
-python action.py
 time=$(date)
 echo "::set-output name=time::$time"
+python action.py || exit 1
