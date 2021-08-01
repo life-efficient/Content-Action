@@ -29,6 +29,8 @@ def get_lesson_paths():
         ]
 
         for lesson in lesson_names:
+            if lesson == "Extra":
+                continue
             # print("lesson:", lesson)
             path = os.path.join(module, lesson)
             paths.append(path)
