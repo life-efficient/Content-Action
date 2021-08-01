@@ -1,7 +1,17 @@
 import unittest
 import os
+from unittest.case import skipIf
 from parameterized import parameterized
 import yaml
+
+
+def testFails(test):
+    """Evaluates whether a test fails - used for skipping tests"""
+    try:
+        test()
+        return False
+    except:
+        return True
 
 
 def get_module_paths():
@@ -39,23 +49,7 @@ class FileNamingConvention(unittest.TestCase):
         try:
             assert lesson_path.split("/")[-1].split(".")[0].isdigit()
         except:
-            raise NameError(f"Lesson not numbered ({lesson_path}")
-
-
-class FileContent(unittest.TestCase):
-    def test_unit_meta_content(self):
-        with open(".unit.yaml") as f:
-            unit_meta = yaml.safe_load(f)
-
-        try:
-            assert type(unit_meta) == dict
-        except:
-            raise AssertionError(".unit.yaml is not a dict")
-
-        try:
-            assert "description" in unit_meta
-        except:
-            raise AssertionError("'description' key not found in .unit.yaml")
+            raise NameError(f"Lesson not numbered ({lesson_path})")
 
 
 class MissingMetaDataFiles(unittest.TestCase):
@@ -87,6 +81,26 @@ class MissingMetaDataFiles(unittest.TestCase):
             raise FileNotFoundError(
                 "Unit meta file (`.unit.yaml`) not found in repository root"
             )
+
+
+class FileContent(unittest.TestCase):
+    @skipIf(
+        testFails(MissingMetaDataFiles().test_missing_unit_meta_file),
+        "Test skipped as `.unit.yaml` not found",
+    )
+    def test_unit_meta_content(self):
+        with open(".unit.yaml") as f:
+            unit_meta = yaml.safe_load(f)
+
+        try:
+            assert type(unit_meta) == dict
+        except:
+            raise AssertionError(".unit.yaml is not a dict")
+
+        try:
+            assert "description" in unit_meta
+        except:
+            raise AssertionError("'description' key not found in .unit.yaml")
 
 
 class MissingLessonContent(unittest.TestCase):
