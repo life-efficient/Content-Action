@@ -107,6 +107,12 @@ class FileContent(unittest.TestCase):
         self.check_key(module_meta_path, "description")
         self.check_yaml_format(module_meta_path, dict)
 
+    def skip_if_file_doesnt_exist(self, fp):
+        if os.path.exists(fp):
+            pass
+        else:
+            self.skipTest(f"Test skipped as {fp} not found")
+
     @skipIf(
         testFails(MissingMetaDataFiles().test_missing_unit_meta_file),
         "Test skipped as `.unit.yaml` not found",
@@ -117,17 +123,13 @@ class FileContent(unittest.TestCase):
 
     @parameterized.expand(get_module_paths())
     def test_module_meta_content(self, module_path):
-        if os.path.exists(os.path.join(module_path, ".module.yaml")):
-            self.check_meta_file_content(module_path, ".module.yaml")
-        else:
-            self.skipTest("Test skipped as `.module.yaml` not found")
+        self.skip_if_file_doesnt_exist(os.path.join(module_path, ".module.yaml"))
+        self.check_meta_file_content(module_path, ".module.yaml")
 
     @parameterized.expand(get_lesson_paths())
     def test_lesson_meta_content(self, lesson_path):
-        if os.path.exists(os.path.join(lesson_path, ".lesson.yaml")):
-            self.check_meta_file_content(lesson_path, ".lesson.yaml")
-        else:
-            self.skipTest("Test skipped as `.lesson.yaml` not found")
+        self.skip_if_file_doesnt_exist(os.path.join(lesson_path, ".lesson.yaml"))
+        self.check_meta_file_content(lesson_path, ".lesson.yaml")
 
 
 class MissingLessonContent(unittest.TestCase):
