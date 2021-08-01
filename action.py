@@ -102,6 +102,11 @@ class FileContent(unittest.TestCase):
         except:
             raise AssertionError(f"{file_path} is not a {type_of_contents}")
 
+    def check_meta_file_content(self, meta_file_directory, meta_file_name):
+        module_meta_path = os.path.join(meta_file_directory, meta_file_name)
+        self.check_key(module_meta_path, "description")
+        self.check_yaml_format(module_meta_path, dict)
+
     @skipIf(
         testFails(MissingMetaDataFiles().test_missing_unit_meta_file),
         "Test skipped as `.unit.yaml` not found",
@@ -110,6 +115,15 @@ class FileContent(unittest.TestCase):
         self.check_key(".unit.yaml", "description")
         self.check_yaml_format(".unit.yaml", dict)
 
+    @parameterized.expand(get_module_paths())
+    def test_module_meta_content(self, module_path):
+        if os.path.exists(
+            os.path.join(module_path, ".module.yaml")
+        ):  # workaround for below TODO
+            self.check_meta_file_content(module_path, ".module.yaml")
+        else:
+            self.skipTest("Test skipped as `.module.yaml` not found")
+
     @parameterized.expand(get_lesson_paths())
     # TODO work out how to skip given parameters from line above
     # @skipIf(
@@ -117,9 +131,12 @@ class FileContent(unittest.TestCase):
     #     "Test skipped as `.lesson.yaml` not found",
     # )
     def test_lesson_meta_content(self, lesson_path):
-        lesson_meta_path = os.path.join(lesson_path, ".lesson.yaml")
-        self.check_key(lesson_meta_path, "description")
-        self.check_yaml_format(lesson_meta_path, dict)
+        if os.path.exists(
+            os.path.join(lesson_path, ".lesson.yaml")
+        ):  # workaround for above TODO
+            self.check_meta_file_content(lesson_path, ".lesson.yaml")
+        else:
+            self.skipTest("Test skipped as `.lesson.yaml` not found")
 
 
 class MissingLessonContent(unittest.TestCase):
