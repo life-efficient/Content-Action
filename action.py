@@ -26,6 +26,22 @@ def get_lesson_paths():
     return paths
 
 
+class FileNamingConvention(unittest.TestCase):
+    @parameterized.expand(get_module_paths())
+    def test_module_numbered(self, module_path):
+        try:
+            assert module_path.split("/")[-1].split(".")[0].isdigit()
+        except:
+            raise NameError(f"Module not numbered ({module_path})")
+
+    @parameterized.expand(get_lesson_paths())
+    def test_lesson_numbered(self, lesson_path):
+        try:
+            assert lesson_path.split("/")[-1].split(".")[0].isdigit()
+        except:
+            raise NameError(f"Lesson not numbered ({lesson_path}")
+
+
 class FileContent(unittest.TestCase):
     def test_unit_meta_content(self):
         with open(".unit.yaml") as f:
