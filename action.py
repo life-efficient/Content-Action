@@ -1,6 +1,7 @@
 import unittest
 import os
 from parameterized import parameterized
+import yaml
 
 
 def get_module_paths():
@@ -25,7 +26,54 @@ def get_lesson_paths():
     return paths
 
 
-class MissingContent(unittest.TestCase):
+class FileContent(unittest.TestCase):
+    def test_unit_meta_content(self):
+        with open(".unit.yaml") as f:
+            unit_meta = yaml.safe_load(f)
+
+        try:
+            assert type(unit_meta) == dict
+        except:
+            raise AssertionError(".unit.yaml is not a dict")
+
+        try:
+            assert "description" in unit_meta
+        except:
+            raise AssertionError("'description' key not found in .unit.yaml")
+
+
+class MissingMetaDataFiles(unittest.TestCase):
+    @parameterized.expand(get_lesson_paths())
+    def test_missing_lesson_meta_file(self, path):
+        files = os.listdir(path)
+        try:
+            assert ".lesson.yaml" in files
+        except:
+            raise FileNotFoundError(
+                "Lesson meta file (`.lesson.yaml`) not found in {path}"
+            )
+
+    @parameterized.expand(get_module_paths())
+    def test_missing_module_meta_file(self, module_path):
+        files = os.listdir(module_path)
+        try:
+            assert ".module.yaml" in files
+        except:
+            raise FileNotFoundError(
+                f"Module meta file (`.module.yaml`) not found in {module_path}"
+            )
+
+    def test_missing_unit_meta_file(self):
+        files = os.listdir()
+        try:
+            assert ".unit.yaml" in files
+        except:
+            raise FileNotFoundError(
+                "Unit meta file (`.unit.yaml`) not found in repository root"
+            )
+
+
+class MissingLessonContent(unittest.TestCase):
     # @parameterized.expand(get_lesson_paths())
     # def test_missing_quiz(self, lesson_path):
     #     files = os.listdir(lesson_path)
@@ -40,7 +88,9 @@ class MissingContent(unittest.TestCase):
         try:
             assert ".challenges.yaml" in files
         except:
-            raise FileNotFoundError('Challenges file not found')
+            raise FileNotFoundError(
+                f"Challenges file (`.challenges.yaml`) not found in {lesson_path}"
+            )
 
     @parameterized.expand(get_lesson_paths())
     def test_missing_lesson(self, lesson_path):
@@ -48,7 +98,9 @@ class MissingContent(unittest.TestCase):
         try:
             assert "Lesson.ipynb" in files
         except:
-            raise FileNotFoundError('Lesson notebook not found')
+            raise FileNotFoundError(
+                f"Lesson notebook (`Lesson.ipynb`) not found in {lesson_path}"
+            )
 
 
-unittest.main(argv=[""], verbosity=2, exit=True)
+unittest.main(verbosity=2, exit=True)
