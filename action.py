@@ -62,7 +62,7 @@ class MissingMetaDataFiles(unittest.TestCase):
             assert ".lesson.yaml" in files
         except:
             raise FileNotFoundError(
-                "Lesson meta file (`.lesson.yaml`) not found in {path}"
+                f"Lesson meta file (`.lesson.yaml`) not found in {path}"
             )
 
     @parameterized.expand(get_module_paths())
