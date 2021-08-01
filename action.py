@@ -117,23 +117,14 @@ class FileContent(unittest.TestCase):
 
     @parameterized.expand(get_module_paths())
     def test_module_meta_content(self, module_path):
-        if os.path.exists(
-            os.path.join(module_path, ".module.yaml")
-        ):  # workaround for below TODO
+        if os.path.exists(os.path.join(module_path, ".module.yaml")):
             self.check_meta_file_content(module_path, ".module.yaml")
         else:
             self.skipTest("Test skipped as `.module.yaml` not found")
 
     @parameterized.expand(get_lesson_paths())
-    # TODO work out how to skip given parameters from line above
-    # @skipIf(
-    #     testFails(MissingMetaDataFiles().test_missing_lesson_meta_file, ),
-    #     "Test skipped as `.lesson.yaml` not found",
-    # )
     def test_lesson_meta_content(self, lesson_path):
-        if os.path.exists(
-            os.path.join(lesson_path, ".lesson.yaml")
-        ):  # workaround for above TODO
+        if os.path.exists(os.path.join(lesson_path, ".lesson.yaml")):
             self.check_meta_file_content(lesson_path, ".lesson.yaml")
         else:
             self.skipTest("Test skipped as `.lesson.yaml` not found")
