@@ -86,23 +86,40 @@ class MissingMetaDataFiles(unittest.TestCase):
 
 
 class FileContent(unittest.TestCase):
+    def check_key(self, file_path, key):
+        with open(file_path) as f:
+            file_contents_yaml = yaml.safe_load(f)
+        try:
+            assert key in file_contents_yaml
+        except:
+            raise AssertionError(f"'{key}' key not found in {file_path}")
+
+    def check_yaml_format(self, file_path, type_of_contents):
+        with open(file_path) as f:
+            file_contents_yaml = yaml.safe_load(f)
+        try:
+            assert type(file_contents_yaml) == type_of_contents
+        except:
+            raise AssertionError(f"{file_path} is not a {type_of_contents}")
+
     @skipIf(
         testFails(MissingMetaDataFiles().test_missing_unit_meta_file),
         "Test skipped as `.unit.yaml` not found",
     )
     def test_unit_meta_content(self):
-        with open(".unit.yaml") as f:
-            unit_meta = yaml.safe_load(f)
+        self.check_key(".unit.yaml", "description")
+        self.check_yaml_format(".unit.yaml", dict)
 
-        try:
-            assert type(unit_meta) == dict
-        except:
-            raise AssertionError(".unit.yaml is not a dict")
-
-        try:
-            assert "description" in unit_meta
-        except:
-            raise AssertionError("'description' key not found in .unit.yaml")
+    @parameterized.expand(get_lesson_paths())
+    # TODO work out how to skip given parameters from line above
+    # @skipIf(
+    #     testFails(MissingMetaDataFiles().test_missing_lesson_meta_file, ),
+    #     "Test skipped as `.lesson.yaml` not found",
+    # )
+    def test_lesson_meta_content(self, lesson_path):
+        lesson_meta_path = os.path.join(lesson_path, ".lesson.yaml")
+        self.check_key(lesson_meta_path, "description")
+        self.check_yaml_format(lesson_meta_path, dict)
 
 
 class MissingLessonContent(unittest.TestCase):
