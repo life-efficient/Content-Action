@@ -34,12 +34,18 @@ class MissingContent(unittest.TestCase):
     @parameterized.expand(get_lesson_paths())
     def test_missing_challenges(self, lesson_path):
         files = os.listdir(lesson_path)
-        assert ".challenges.yaml" in files
+        try:
+            assert ".challenges.yaml" in files
+        except:
+            raise FileNotFoundError('Challenges file not found')
 
     @parameterized.expand(get_lesson_paths())
     def test_missing_lesson(self, lesson_path):
         files = os.listdir(lesson_path)
-        assert "Lesson.ipynb" in files
+        try:
+            assert "Lesson.ipynb" in files
+        except:
+            raise FileNotFoundError('Lesson notebook not found')
 
 
 unittest.main(argv=[""], verbosity=2, exit=True)
