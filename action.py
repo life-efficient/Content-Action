@@ -29,7 +29,10 @@ class MissingContent(unittest.TestCase):
     # @parameterized.expand(get_lesson_paths())
     # def test_missing_quiz(self, lesson_path):
     #     files = os.listdir(lesson_path)
-    #     assert ".quiz.yaml" in files
+    #     try:
+    #         assert ".quiz.yaml" in files
+    #     except:
+    #         raise FileNotFoundError('Quiz file not found')
 
     @parameterized.expand(get_lesson_paths())
     def test_missing_challenges(self, lesson_path):
