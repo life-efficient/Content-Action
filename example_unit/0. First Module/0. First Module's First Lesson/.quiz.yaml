@@ -1,0 +1,13 @@
+id: testingid
+name: My test
+questions:
+  - question: Which is the best option?
+    description: This is a great question
+    options:
+      - option: The first option
+        correct: true
+        reason: Great option
+      - option: The second option
+        correct: false
+        reason: Bad option
+       

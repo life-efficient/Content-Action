@@ -15,7 +15,9 @@ def testFails(test):
 
 
 def get_module_paths():
-    return [p for p in os.listdir() if os.path.isdir(p) and p[0] != "."]
+    return [
+        p for p in os.listdir() if os.path.isdir(p) and p[0] != "." and p != "Extra"
+    ]
 
 
 def get_lesson_paths():
@@ -159,6 +161,26 @@ class MissingLessonContent(unittest.TestCase):
         except:
             raise FileNotFoundError(
                 f"Lesson notebook (`Lesson.ipynb`) not found in {lesson_path}"
+            )
+
+
+class Challenges(unittest.TestCase):
+    @parameterized.expand(get_lesson_paths())
+    def test_challenges_length(lesson_path):
+        """Tests enough challenges are in the .challenges.yaml file"""
+        with open(os.path.join(lesson_path, ".challenges.yaml")) as f:
+            challenges = yaml.safe_load(f)
+        try:
+            assert len(challenges) > 0
+        except:
+            raise AssertionError(
+                f"Lesson {lesson_path} has no challenges in the .challenges.yaml file"
+            )
+        try:
+            assert len(challenges) > 3
+        except:
+            raise AssertionError(
+                f"Lesson {lesson_path} has too few challenges in the .challenges.yaml file"
             )
 
 
