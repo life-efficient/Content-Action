@@ -1,4 +1,4 @@
-# Content-Action
+# Content-Structure-Action
 
 This action checks that your content contains everything necessary
 
