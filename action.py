@@ -184,6 +184,4 @@ class MissingLessonContent(unittest.TestCase):
 #             )
 
 
-print(get_module_paths())
-dscs
 unittest.main(verbosity=2, exit=True)
