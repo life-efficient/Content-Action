@@ -1,4 +1,4 @@
-# Content-Structure-Action
+# Content-Review-Action
 
 This action checks that your content contains everything necessary
 
