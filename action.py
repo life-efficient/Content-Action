@@ -18,7 +18,7 @@ def get_module_paths():
     return [
         p
         for p in os.listdir()
-        if os.path.isdir(p) and p[0] != "." and p not in ["Extra", "Project briefs"]
+        if os.path.isdir(p) and p[0] != "." and p not in ["Extra", "Project Briefs"]
     ]
 
 
