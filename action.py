@@ -157,6 +157,8 @@ class MissingLessonContent(unittest.TestCase):
 
     @parameterized.expand(get_lesson_paths())
     def test_missing_lesson(self, lesson_path):
+        if not notebook_required(lesson_path):
+            self.skipTest(f"Notebook not required for {lesson_path}")
         files = os.listdir(lesson_path)
         try:
             assert "Notebook.ipynb" in files
@@ -164,6 +166,15 @@ class MissingLessonContent(unittest.TestCase):
             raise FileNotFoundError(
                 f"Notebook (`Notebook.ipynb`) not found in {lesson_path}"
             )
+
+
+def notebook_required(lesson_path):
+    with open(os.path.join(lesson_path, ".lesson.yaml")) as f:
+        lesson_meta = yaml.safe_load(f)
+    if "requires_notebook" in lesson_meta and lesson_meta["requires_notebook"]:
+        return True
+    else:
+        return False
 
 
 # class Challenges(unittest.TestCase):
